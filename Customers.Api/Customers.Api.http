@@ -1,0 +1,36 @@
+@Customers.Api_HostAddress = https://localhost:5001
+
+POST {{Customers.Api_HostAddress}}/customers
+Content-Type: application/json
+
+{
+  "email": "minhtrn98@gmail.com",
+  "fullName": "Minh Tran",
+  "gitHubUsername": "minhtrn98",
+  "dateOfBirth": "1998-03-25"
+}
+
+###
+
+GET {{Customers.Api_HostAddress}}/customers/89f673d1-cdaf-4e32-ba25-1345f8063a10
+
+###
+
+GET {{Customers.Api_HostAddress}}/customers
+
+###
+
+PUT {{Customers.Api_HostAddress}}/customers/f542883c-3b33-48d1-a7cc-6c600d181982
+Content-Type: application/json
+
+{
+  "id": "f542883c-3b33-48d1-a7cc-6c600d181982",
+  "email": "minhtrn98@gmail.com",
+  "fullName": "Minh Tran",
+  "gitHubUsername": "minhtrn98",
+  "dateOfBirth": "1998-03-25"
+}
+
+###
+
+DELETE {{Customers.Api_HostAddress}}/customers/f542883c-3b33-48d1-a7cc-6c600d181982
