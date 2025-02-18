@@ -13,6 +13,10 @@ public sealed class QueueConsumerService : BackgroundService
     private readonly QueueSettings _settings;
     private readonly IMediator _mediator;
     private readonly ILogger<QueueConsumerService> _logger;
+    private readonly JsonSerializerOptions _options = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     public QueueConsumerService(IAmazonSQS sqs, IOptions<QueueSettings> options, IMediator mediator, ILogger<QueueConsumerService> logger)
     {
@@ -47,10 +51,10 @@ public sealed class QueueConsumerService : BackgroundService
                     continue;
                 }
 
-                ISqsMessage typedMessage = (ISqsMessage)JsonSerializer.Deserialize(message.Body, type)!;
 
                 try
                 {
+                    ISqsMessage typedMessage = (ISqsMessage)JsonSerializer.Deserialize(message.Body, type, _options)!;
                     await _mediator.Send(typedMessage, stoppingToken);
                 }
                 catch (Exception ex)
