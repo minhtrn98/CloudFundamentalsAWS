@@ -33,7 +33,7 @@ public sealed class SqsMessenger(IAmazonSQS sqs, IOptions<QueueSettings> options
         return await _sqs.SendMessageAsync(request);
     }
 
-    private async Task<string> GetQueueUrlAsync()
+    private async ValueTask<string> GetQueueUrlAsync()
     {
         return _queueUrl ??= (await _sqs.GetQueueUrlAsync(_settings.QueueName)).QueueUrl;
     }
