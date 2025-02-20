@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
   "email": "minhtrn98@gmail.com",
-  "fullName": "Minh Tran",
+  "fullName": "Minh Tran Cong",
   "gitHubUsername": "minhtrn98",
   "dateOfBirth": "1998-03-25"
 }
