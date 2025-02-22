@@ -8,18 +8,11 @@ public interface IDbConnectionFactory
     public Task<IDbConnection> CreateConnectionAsync();
 }
 
-public class SqliteConnectionFactory : IDbConnectionFactory
+public class SqliteConnectionFactory(string connectionString) : IDbConnectionFactory
 {
-    private readonly string _connectionString;
-
-    public SqliteConnectionFactory(string connectionString)
-    {
-        _connectionString = connectionString;
-    }
-
     public async Task<IDbConnection> CreateConnectionAsync()
     {
-        var connection = new SqliteConnection(_connectionString);
+        SqliteConnection connection = new SqliteConnection(connectionString);
         await connection.OpenAsync();
         return connection;
     }

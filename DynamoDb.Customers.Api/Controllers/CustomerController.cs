@@ -1,9 +1,9 @@
+using DynamoDb.Customers.Api.Contracts.Requests;
+using DynamoDb.Customers.Api.Mapping;
+using DynamoDb.Customers.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Sns.Customers.Api.Contracts.Requests;
-using Sns.Customers.Api.Mapping;
-using Sns.Customers.Api.Services;
 
-namespace Sns.Customers.Api.Controllers;
+namespace DynamoDb.Customers.Api.Controllers;
 
 [ApiController]
 public class CustomerController(ICustomerService customerService) : ControllerBase

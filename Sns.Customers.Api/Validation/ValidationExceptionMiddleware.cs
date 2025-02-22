@@ -3,26 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Sns.Customers.Api.Validation;
 
-public class ValidationExceptionMiddleware
+public class ValidationExceptionMiddleware(RequestDelegate request)
 {
-    private readonly RequestDelegate _request;
-
-    public ValidationExceptionMiddleware(RequestDelegate request)
-    {
-        _request = request;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
-            await _request(context);
+            await request(context);
         }
         catch (ValidationException exception)
         {
             context.Response.StatusCode = 400;
 
-            var error = new ValidationProblemDetails
+            ValidationProblemDetails error = new ValidationProblemDetails
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Status = 400,
@@ -31,7 +24,7 @@ public class ValidationExceptionMiddleware
                     ["traceId"] = context.TraceIdentifier
                 }
             };
-            foreach (var validationFailure in exception.Errors)
+            foreach (FluentValidation.Results.ValidationFailure? validationFailure in exception.Errors)
             {
                 error.Errors.Add(new KeyValuePair<string, string[]>(
                     validationFailure.PropertyName,

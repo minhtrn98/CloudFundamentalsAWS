@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Customers.Api.Validation;
+namespace DynamoDb.Customers.Api.Validation;
 
 public class ValidationExceptionMiddleware(RequestDelegate request)
 {
@@ -27,7 +27,7 @@ public class ValidationExceptionMiddleware(RequestDelegate request)
             foreach (FluentValidation.Results.ValidationFailure? validationFailure in exception.Errors)
             {
                 error.Errors.Add(new KeyValuePair<string, string[]>(
-                    validationFailure.PropertyName, 
+                    validationFailure.PropertyName,
                     new[] { validationFailure.ErrorMessage }));
             }
             await context.Response.WriteAsJsonAsync(error);

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text.Json.Nodes;
 
-namespace Sns.Customers.Api.Services;
+namespace DynamoDb.Customers.Api.Services;
 
 public class GitHubService(IHttpClientFactory httpClientFactory) : IGitHubService
 {

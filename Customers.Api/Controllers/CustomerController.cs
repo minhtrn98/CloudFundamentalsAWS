@@ -6,23 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Customers.Api.Controllers;
 
 [ApiController]
-public class CustomerController : ControllerBase
+public class CustomerController(ICustomerService customerService) : ControllerBase
 {
-    private readonly ICustomerService _customerService;
-
-    public CustomerController(ICustomerService customerService)
-    {
-        _customerService = customerService;
-    }
-
     [HttpPost("customers")]
     public async Task<IActionResult> Create([FromBody] CustomerRequest request)
     {
-        var customer = request.ToCustomer();
+        Domain.Customer customer = request.ToCustomer();
 
-        await _customerService.CreateAsync(customer);
+        await customerService.CreateAsync(customer);
 
-        var customerResponse = customer.ToCustomerResponse();
+        Contracts.Responses.CustomerResponse customerResponse = customer.ToCustomerResponse();
 
         return CreatedAtAction("Get", new { customerResponse.Id }, customerResponse);
     }
@@ -30,22 +23,22 @@ public class CustomerController : ControllerBase
     [HttpGet("customers/{id:guid}")]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
-        var customer = await _customerService.GetAsync(id);
+        Domain.Customer? customer = await customerService.GetAsync(id);
 
         if (customer is null)
         {
             return NotFound();
         }
 
-        var customerResponse = customer.ToCustomerResponse();
+        Contracts.Responses.CustomerResponse customerResponse = customer.ToCustomerResponse();
         return Ok(customerResponse);
     }
     
     [HttpGet("customers")]
     public async Task<IActionResult> GetAll()
     {
-        var customers = await _customerService.GetAllAsync();
-        var customersResponse = customers.ToCustomersResponse();
+        IEnumerable<Domain.Customer> customers = await customerService.GetAllAsync();
+        Contracts.Responses.GetAllCustomersResponse customersResponse = customers.ToCustomersResponse();
         return Ok(customersResponse);
     }
     
@@ -53,24 +46,24 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> Update(
         [FromMultiSource] UpdateCustomerRequest request)
     {
-        var existingCustomer = await _customerService.GetAsync(request.Id);
+        Domain.Customer? existingCustomer = await customerService.GetAsync(request.Id);
 
         if (existingCustomer is null)
         {
             return NotFound();
         }
 
-        var customer = request.ToCustomer();
-        await _customerService.UpdateAsync(customer);
+        Domain.Customer customer = request.ToCustomer();
+        await customerService.UpdateAsync(customer);
 
-        var customerResponse = customer.ToCustomerResponse();
+        Contracts.Responses.CustomerResponse customerResponse = customer.ToCustomerResponse();
         return Ok(customerResponse);
     }
     
     [HttpDelete("customers/{id:guid}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        var deleted = await _customerService.DeleteAsync(id);
+        bool deleted = await customerService.DeleteAsync(id);
         if (!deleted)
         {
             return NotFound();
