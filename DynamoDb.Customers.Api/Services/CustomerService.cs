@@ -50,7 +50,7 @@ public class CustomerService(
         return customerDtos.Select(x => x.ToCustomer());
     }
 
-    public async Task<bool> UpdateAsync(Customer customer)
+    public async Task<bool> UpdateAsync(Customer customer, DateTime requestStarted)
     {
         Contracts.Data.CustomerDto customerDto = customer.ToCustomerDto();
 
@@ -61,7 +61,7 @@ public class CustomerService(
             throw new ValidationException(message, GenerateValidationError(nameof(customer.GitHubUsername), message));
         }
 
-        bool response = await customerRepository.UpdateAsync(customerDto);
+        bool response = await customerRepository.UpdateAsync(customerDto, requestStarted);
         if (response)
         {
             //await sqsMessenger.SendAsync(customer.ToCustomerUpdatedMessage());

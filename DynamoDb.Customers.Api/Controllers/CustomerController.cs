@@ -46,6 +46,8 @@ public class CustomerController(ICustomerService customerService) : ControllerBa
     public async Task<IActionResult> Update(
         [FromMultiSource] UpdateCustomerRequest request)
     {
+        DateTime requestStarted = DateTime.UtcNow;
+
         Domain.Customer? existingCustomer = await customerService.GetAsync(request.Id);
 
         if (existingCustomer is null)
@@ -54,7 +56,7 @@ public class CustomerController(ICustomerService customerService) : ControllerBa
         }
 
         Domain.Customer customer = request.ToCustomer();
-        await customerService.UpdateAsync(customer);
+        await customerService.UpdateAsync(customer, requestStarted);
 
         Contracts.Responses.CustomerResponse customerResponse = customer.ToCustomerResponse();
         return Ok(customerResponse);
