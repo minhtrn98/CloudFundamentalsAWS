@@ -12,7 +12,7 @@ public class SqliteConnectionFactory(string connectionString) : IDbConnectionFac
 {
     public async Task<IDbConnection> CreateConnectionAsync()
     {
-        SqliteConnection connection = new SqliteConnection(connectionString);
+        SqliteConnection connection = new(connectionString);
         await connection.OpenAsync();
         return connection;
     }

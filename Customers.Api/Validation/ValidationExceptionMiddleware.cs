@@ -15,7 +15,7 @@ public class ValidationExceptionMiddleware(RequestDelegate request)
         {
             context.Response.StatusCode = 400;
 
-            ValidationProblemDetails error = new ValidationProblemDetails
+            ValidationProblemDetails error = new()
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Status = 400,
