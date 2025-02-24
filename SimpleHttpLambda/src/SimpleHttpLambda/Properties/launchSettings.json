@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SimpleHttpLambda": {
+      "commandName": "Project"
+    },
+    "Debug Http Lambda": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\tranc\\.dotnet\\tools\\dotnet-lambda-test-tool-8.0.exe",
+      "workingDirectory": "D:\\sample_sources\\CloudFundamentalsAWS\\SimpleHttpLambda\\src\\SimpleHttpLambda"
+    }
+  }
+}
