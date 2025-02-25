@@ -20,12 +20,12 @@ GET {{Customers.Api_HostAddress}}/customers
 
 ###
 
-PUT {{Customers.Api_HostAddress}}/customers/71d609c6-af0a-4644-ba8e-22b6bf99ea79
+PUT {{Customers.Api_HostAddress}}/customers/7ae4e1f9-0c61-4f9f-833a-45453c88b659
 Content-Type: application/json
 
 {
-  "id": "71d609c6-af0a-4644-ba8e-22b6bf99ea79",
-  "email": "minhtrn98@gmail.com",
+  "id": "7ae4e1f9-0c61-4f9f-833a-45453c88b659",
+  "email": "minhtrn981@gmail.com",
   "fullName": "Minh Tran Cong",
   "gitHubUsername": "minhtrn98",
   "dateOfBirth": "1998-03-25"

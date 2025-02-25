@@ -1,0 +1,6 @@
+@SimpleApiLambda_HostAddress = https://x6mfzih2rl54kkw2n4eaf6tpha0rtrzo.lambda-url.ap-southeast-1.on.aws/
+
+GET {{SimpleApiLambda_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
