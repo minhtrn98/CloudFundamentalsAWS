@@ -2,6 +2,8 @@
 using Amazon.S3.Model;
 using System.Text;
 
+const string bucketName = "minhtrn98-bucket";
+
 AmazonS3Client s3Client = new(new AmazonS3Config()
 {
     Profile = new Amazon.Profile("developer-01-mfa"),
@@ -11,7 +13,7 @@ AmazonS3Client s3Client = new(new AmazonS3Config()
 
 //GetObjectRequest getObjectRequest = new()
 //{
-//    BucketName = "minhtrn98-bucket",
+//    BucketName = bucketName,
 //    Key = "files/movies.csv"
 //};
 
@@ -26,7 +28,7 @@ AmazonS3Client s3Client = new(new AmazonS3Config()
 
 //PutObjectRequest objectRequest = new ()
 //{
-//    BucketName = "minhsawsbucket",
+//    BucketName = bucketName,
 //    Key = "images/face.png",
 //    ContentType = "image/png",
 //    InputStream = fileStream
@@ -34,19 +36,21 @@ AmazonS3Client s3Client = new(new AmazonS3Config()
 
 //await s3Client.PutObjectAsync(objectRequest);
 
+List<string> tempKeys = await ListAllObjectKeysByPrefix(s3Client, bucketName, "temp/");
+List<string> imagesKeys = await ListAllObjectKeysByPrefix(s3Client, bucketName, "images/");
 
-await foreach (string key in ListAllObjectKeysByPrefix(s3Client, "minhtrn98-bucket", "temp/"))
-{
-    Console.WriteLine($"Key: {key.Replace("temp/", "")}");
-}
+string[] tempKeysToDelete = [.. tempKeys.Except(imagesKeys).Select(x => $"temp/{x}")];
+
+await DeleteObjectsByKey(s3Client, bucketName, tempKeysToDelete);
 
 Console.ReadKey();
 
-static async IAsyncEnumerable<string> ListAllObjectKeysByPrefix(
+static async Task<List<string>> ListAllObjectKeysByPrefix(
     AmazonS3Client s3Client,
     string bucketName,
     string prefix)
 {
+    List<string> result = [];
     ListObjectsV2Response listObjectsResponse;
     string? lastKey = string.Empty;
     do
@@ -61,9 +65,33 @@ static async IAsyncEnumerable<string> ListAllObjectKeysByPrefix(
         listObjectsResponse = await s3Client.ListObjectsV2Async(listObjectsRequest);
         foreach (S3Object entry in listObjectsResponse.S3Objects)
         {
-            yield return entry.Key;
+            result.Add(entry.Key.Replace(prefix, ""));
         }
         lastKey = listObjectsResponse.S3Objects.LastOrDefault()?.Key;
 
     } while (listObjectsResponse.IsTruncated);
+    return result;
+}
+
+static async Task DeleteObjectsByKey(
+    AmazonS3Client s3Client,
+    string bucketName,
+    string[] keys)
+{
+    DeleteObjectsRequest deleteRequest = new ()
+    {
+        BucketName = bucketName,
+        Objects = [.. keys.Select(x => new KeyVersion() { Key = x,  })],
+    };
+
+    DeleteObjectsResponse deleteResponse = await s3Client.DeleteObjectsAsync(deleteRequest);
+
+    if (deleteResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
+    {
+        Console.WriteLine($"Deleted {deleteResponse.DeletedObjects.Count} objects.");
+    }
+    else
+    {
+        Console.WriteLine($"Failed to delete objects. Status code: {deleteResponse.HttpStatusCode}");
+    }
 }
